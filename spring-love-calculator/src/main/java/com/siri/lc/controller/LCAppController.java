@@ -1,10 +1,14 @@
 package com.siri.lc.controller;
 
+import java.util.List;
+
+import javax.validation.Valid;
+
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.siri.lc.api.UserInfoDTO;
 
@@ -14,7 +18,7 @@ public class LCAppController {
 	@RequestMapping("/")
 	public String showHomePage(@ModelAttribute("userinfo") UserInfoDTO userInfoDto)
 	{
-		//we can write these two line in a simgle line way
+		//we can write these two lines in a single line
 		//UserInfoDTO userInfoDto=new UserInfoDTO();
 		//model.addAttribute("userinfo", userInfoDto);
 		return "home-page";
@@ -28,17 +32,26 @@ public class LCAppController {
 		model.addAttribute("UserName", username1);
 		model.addAttribute("CrushName", crushname1);
 		
-		return "resut-page";
+		return "result-page";
 	}*/
 	@RequestMapping("/process-homepage")
-	public String showResultPage(@ModelAttribute("userinfo") UserInfoDTO userInfoDto)
+	public String showResultPage(@Valid @ModelAttribute("userinfo") UserInfoDTO userInfoDto,BindingResult result)
 	{
 		//System.out.println("your name:"+username1);
 		//System.out.println("your name:"+crushname1);
 		//model.addAttribute("UserName", userInfoDto.getUsername());
 		//model.addAttribute("CrushName",userInfoDto.getCrushname() );
 		//model.addAttribute("userInfoDto", userInfoDto);
-		
+		if(result.hasErrors())
+		{
+			System.out.println("form has errors....");
+			List<ObjectError> allerrors=result.getAllErrors();
+			for(ObjectError error:allerrors)
+			{
+				System.out.println(error);
+			}
+			return "home-page";
+		}
 		return "resut-page";
 	}
 }
